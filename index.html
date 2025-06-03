@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Snack Savior: Chaos Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts for sketchy vibe -->
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #fcfbf6;
+      font-family: 'Shadows Into Light', Arial, sans-serif;
+      color: #232323;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    nav {
+      background: #707070;
+      color: white;
+      font-family: 'Permanent Marker', cursive;
+      font-size: 2rem;
+      padding: 1.2rem 0;
+      text-align: center;
+      border-bottom: 3px dashed #fff;
+      position: relative;
+      letter-spacing: 1px;
+    }
+    .section-btn {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      background: #fff;
+      border: 2px solid #232323;
+      border-radius: 8px;
+      padding: 0.2rem 0.7rem;
+      font-size: 1rem;
+      font-family: 'Shadows Into Light', cursive;
+      cursor: pointer;
+      box-shadow: 1px 1px 3px #23232344;
+      transition: background 0.2s;
+    }
+    .section-btn:hover {
+      background: #ffe5a5;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero {
+      margin: 2.5rem 0 2rem 0;
+      font-family: 'Permanent Marker', cursive;
+      font-size: 2.6rem;
+      background: #fff;
+      border: 3px solid #198cff;
+      border-radius: 8px;
+      padding: 0.5rem 1.3rem;
+      display: inline-block;
+      box-shadow: 2px 2px 0 #23232344;
+    }
+    .chatbot-circle {
+      margin: 2rem 0;
+      width: 340px;
+      height: 340px;
+      background: #707070;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      font-family: 'Shadows Into Light', cursive;
+      border: 6px dashed #fff;
+      box-shadow: 3px 3px 0 #23232366;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      text-align: center;
+      position: relative;
+    }
+    .chatbot-circle:hover {
+      background: #585858;
+      box-shadow: 4px 6px 0 #fdc88688;
+    }
+    .bubble-text {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff9ce;
+      color: #232323;
+      font-size: 1.2rem;
+      padding: 0.8rem 1.3rem;
+      border-radius: 20px;
+      border: 2px solid #232323;
+      font-family: 'Shadows Into Light', cursive;
+      min-width: 170px;
+      max-width: 220px;
+      box-shadow: 1px 2px 0 #23232366;
+      z-index: 2;
+      display: none;
+      animation: popUp 0.18s;
+    }
+    @keyframes popUp {
+      0% { transform: scale(0.7) translateX(-50%);}
+      100% { transform: scale(1) translateX(-50%);}
+    }
+    .results {
+      width: 100%;
+      background: #707070;
+      color: #fff;
+      text-align: center;
+      font-size: 1.7rem;
+      font-family: 'Permanent Marker', cursive;
+      padding: 2.2rem 0 2.4rem 0;
+      border-top: 3px dashed #fff;
+      margin-top: 2rem;
+      min-height: 60px;
+    }
+    @media (max-width: 700px) {
+      .chatbot-circle {
+        width: 92vw;
+        height: 36vw;
+        max-width: 300px;
+        max-height: 300px;
+        min-width: 180px;
+        min-height: 180px;
+        font-size: 1.2rem;
+      }
+      .hero {
+        font-size: 1.3rem;
+        padding: 0.3rem 0.7rem;
+      }
+      .results {
+        font-size: 1.1rem;
+        padding: 1rem 0;
+      }
+      nav {
+        font-size: 1.1rem;
+        padding: 0.7rem 0;
+      }
+      .section-btn {
+        font-size: 0.9rem;
+        padding: 0.1rem 0.3rem;
+        top: 5px;
+        left: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <button class="section-btn">Section 1</button>
+    Nav
+  </nav>
+  <main>
+    <div class="hero">Hero</div>
+    <div class="chatbot-circle" id="chatbot">
+      <span>Chat Bot</span>
+      <div class="bubble-text" id="bubble"></div>
+    </div>
+  </main>
+  <div class="results" id="results">
+    Results
+  </div>
+  <script>
+    // Sample Quest/Mood data
+    const snackQuests = [
+      "Snack Quest: Use 3 pantry-only items (bonus if you can’t pronounce one of them).",
+      "Snack Quest: Make something green that didn’t come from mold.",
+      "Snack Quest: No microwave today. Channel your inner campfire chef.",
+      "Snack Quest: Survive a meal using only condiments. Pray for your taste buds.",
+      "Snack Quest: Assemble a sandwich using only leftovers. If it crunches, check if it’s edible.",
+      "Snack Quest: Cook pasta in a coffee pot. +XP if it doesn't taste like despair.",
+    ];
+
+    const moodBased = [
+      {
+        mood: "I feel dead inside.",
+        response: "Make Sad Toast Deluxe. Add cinnamon. Cry only once. Extra XP if you plate it ironically."
+      },
+      {
+        mood: "I'm broke and hungry.",
+        response: "Peanut butter on a tortilla. Fold in half. Eat while staring wistfully into the void."
+      },
+      {
+        mood: "I'm thriving (for once)",
+        response: "Avocado toast, but go wild: add hot sauce, seeds, and maybe optimism."
+      },
+      {
+        mood: "Nothing but ramen left.",
+        response: "Upgrade that ramen: add an egg, some frozen veggies, and a dash of dignity."
+      }
+    ];
+
+    // Randomly pick a type of response
+    function getRandomResponse() {
+      // 50% chance quest, 50% chance mood-based (with random mood)
+      if (Math.random() < 0.5) {
+        return snackQuests[Math.floor(Math.random() * snackQuests.length)];
+      } else {
+        const entry = moodBased[Math.floor(Math.random() * moodBased.length)];
+        return `Mood Quest: "${entry.mood}"<br><b>${entry.response}</b>`;
+      }
+    }
+
+    const chatbot = document.getElementById('chatbot');
+    const bubble = document.getElementById('bubble');
+    const results = document.getElementById('results');
+
+    // Show bubble with random advice
+    chatbot.addEventListener('click', () => {
+      const response = getRandomResponse();
+      bubble.innerHTML = response;
+      bubble.style.display = 'block';
+
+      // Also show in Results area
+      results.innerHTML = response.replace(/<br>/g, " ");
+      // Hide bubble after 5 seconds
+      setTimeout(() => { bubble.style.display = 'none'; }, 5000);
+    });
+
+    // For fun, clicking the nav "section" button gives a random achievement
+    const achievements = [
+      "Achievement Unlocked: First Microwave Burn 🔥",
+      "Achievement Unlocked: Used a Vegetable on Purpose 🥦",
+      "Achievement Unlocked: Survived Finals With Oatmeal and Grit 📚",
+      "Achievement Unlocked: Culinary Goblin Level 10 🐉",
+      "Achievement Unlocked: Your intestines are no longer threatening mutiny.",
+    ];
+    document.querySelector('.section-btn').addEventListener('click', () => {
+      results.innerText = achievements[Math.floor(Math.random() * achievements.length)];
+    });
+  </script>
+</body>
+</html>
